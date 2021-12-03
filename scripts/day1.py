@@ -1,9 +1,7 @@
-import pathlib
+from helpers import get_input
 
 def number_of_measurement_increases(window=1) -> int:
-    input_file = pathlib.Path(__file__).resolve().parent.parent / "input/day1"
-    with open(input_file, "r") as f:
-        depths = [int(row) for row in f.readlines()]
+    depths = [int(row) for row in get_input(1)]
 
     num_increases = sum(
         sum(depths[i+1:i+window+1]) > sum(depths[i:i+window]) 
