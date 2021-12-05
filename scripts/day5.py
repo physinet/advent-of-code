@@ -35,13 +35,7 @@ def main(diagonal: bool = False) -> int:
 
                 board[i][j] += 1
 
-    count_overlap = 0
-    for row in board:
-        for col in row:
-            if col > 1:
-                count_overlap += 1
-    return count_overlap
-
+    return sum(col > 1 for row in board  for col in row)
 
 if __name__ == "__main__":
     print(main())
