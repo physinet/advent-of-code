@@ -28,14 +28,15 @@ def main(diagonal: bool = False) -> int:
             x_dir, y_dir = sign(x_iter), sign(y_iter)
             for i, j in zip_longest(
                 range(start[0], end[0] + x_dir, x_dir),
-                range(start[1], end[1] + y_dir, y_dir)
+                range(start[1], end[1] + y_dir, y_dir),
             ):
                 i = start[0] if i is None else i
                 j = start[1] if j is None else j
 
                 board[i][j] += 1
 
-    return sum(col > 1 for row in board  for col in row)
+    return sum(col > 1 for row in board for col in row)
+
 
 if __name__ == "__main__":
     print(main())
