@@ -6,11 +6,12 @@ def calories(n) -> int:
     calories_per_elf = []
     running_total = 0
     for row in get_input(1):
-        if cals := row.strip():
-            running_total += int(cals)
-        else:
-            heappush(calories_per_elf, running_total)
-            running_total = 0
+        match row:
+            case cals if cals.strip():
+                running_total += int(cals)
+            case _:
+                heappush(calories_per_elf, running_total)
+                running_total = 0
 
     return sum(nlargest(n, calories_per_elf))
 
