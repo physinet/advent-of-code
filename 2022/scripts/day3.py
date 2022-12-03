@@ -1,3 +1,5 @@
+from operator import and_
+from functools import reduce
 from helpers import get_input
 
 
@@ -14,8 +16,20 @@ def _priority(item: str) -> int:
     return ord(item) - 96
 
 
-def sum_priorities(rows) -> int:
+def sum_priorities(rows: list[str]) -> int:
     return sum(_priority(_item_in_both_compartments(row)) for row in rows)
+
+
+def _item_in_all_groups(rows: list[str]) -> str:
+    sets = map(set, map(str.strip, rows))
+    (item,) = reduce(and_, sets)
+    return item
+
+
+def sum_priorities_part2(rows) -> int:
+    return sum(
+        _priority(_item_in_all_groups(rows[i : i + 3])) for i in range(0, len(rows), 3)
+    )
 
 
 TEST = [
@@ -26,6 +40,9 @@ TEST = [
     "ttgJtRGJQctTZtZT",
     "CrZsJsPPZsGzwwsLwLmpwMDw",
 ]
+
 if __name__ == "__main__":
     assert sum_priorities(TEST) == 157
     print(sum_priorities(get_input(3)))
+    assert sum_priorities_part2(TEST) == 70
+    print(sum_priorities_part2(get_input(3)))
