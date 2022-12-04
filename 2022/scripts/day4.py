@@ -23,6 +23,14 @@ def fully_contains(sec1: SectionRange, sec2: SectionRange) -> bool:
     )
 
 
+def overlaps(sec1: SectionRange, sec2: SectionRange) -> bool:
+    return any(sec1[0] <= val <= sec1[1] for val in sec2) or any(
+        sec2[0] <= val <= sec2[1] for val in sec1
+    )
+
+
 if __name__ == "__main__":
     assert sum(fully_contains(*pair_sections(row)) for row in TEST) == 2
     print(sum(fully_contains(*pair_sections(row)) for row in get_input(4)))
+    assert sum(overlaps(*pair_sections(row)) for row in TEST) == 4
+    print(sum(overlaps(*pair_sections(row)) for row in get_input(4)))
