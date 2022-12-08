@@ -1,3 +1,5 @@
+import heapq
+from bisect import bisect
 from typing import Union
 from dataclasses import dataclass, field
 from helpers import get_input
@@ -40,11 +42,15 @@ class Directory:
     children: dict[str, Union["Directory", File]] = field(default_factory=dict)
     total_size: int = 0
 
+    def __lt__(self, other):
+        return self.total_size < other.total_size
 
-N = 100000
+
+N = 100_000
+TOTAL_DISK_SPACE = 70_000_000
 
 
-def main(lines):
+def parse(lines):
     home = directory = Directory("/")
     for line in lines[1:]:  # skip initial $ cd /
         if line.startswith("$ ls"):
@@ -64,21 +70,28 @@ def main(lines):
             size, name = line.split()
             directory.children.setdefault(name, File(name, int(size)))
 
-    def _dfs(directory, total):
-        for directory_or_file in directory.children.values():
-            if isinstance(directory_or_file, Directory):
-                _, total = _dfs(directory_or_file, total)
-                directory.total_size += directory_or_file.total_size
-                if directory_or_file.total_size <= N:
-                    total += directory_or_file.total_size
-            else:
-                directory.total_size += directory_or_file.size
-        return directory, total
+    heap = [home]
 
-    _, total = _dfs(home, 0)
-    return total
+    def _dfs(parent):
+        for child in parent.children.values():
+            if isinstance(child, Directory):
+                _dfs(child)
+                parent.total_size += child.total_size
+                heapq.heappush(heap, child)
+            else:
+                parent.total_size += child.size
+
+    _dfs(home)
+    return heap
+
+
+def part1(dirs):
+    return sum(d.total_size for d in dirs if d.total_size <= N)
 
 
 if __name__ == "__main__":
-    assert main(TEST.split("\n")) == 95437
-    print(main(get_input(7)))
+    dirs = parse(TEST.split("\n"))
+    assert part1(dirs) == 95437
+
+    dirs = parse(get_input(7))
+    print(part1(dirs))
