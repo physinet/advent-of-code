@@ -1,4 +1,3 @@
-import heapq
 from bisect import bisect
 from typing import Union
 from dataclasses import dataclass, field
@@ -42,15 +41,16 @@ class Directory:
     children: dict[str, Union["Directory", File]] = field(default_factory=dict)
     total_size: int = 0
 
-    def __lt__(self, other):
+    def __lt__(self: "Directory", other: "Directory") -> bool:
         return self.total_size < other.total_size
 
 
 N = 100_000
 TOTAL_DISK_SPACE = 70_000_000
+DISK_SPACE_NEEDED = 30_000_000
 
 
-def parse(lines):
+def parse(lines: list[str]) -> list[Directory]:
     home = directory = Directory("/")
     for line in lines[1:]:  # skip initial $ cd /
         if line.startswith("$ ls"):
@@ -70,28 +70,37 @@ def parse(lines):
             size, name = line.split()
             directory.children.setdefault(name, File(name, int(size)))
 
-    heap = [home]
+    all_dirs = [home]
 
-    def _dfs(parent):
+    def _dfs(parent: Directory) -> None:
         for child in parent.children.values():
             if isinstance(child, Directory):
                 _dfs(child)
                 parent.total_size += child.total_size
-                heapq.heappush(heap, child)
+                all_dirs.append(child)
             else:
                 parent.total_size += child.size
 
     _dfs(home)
-    return heap
+    return list(sorted(all_dirs))
 
 
 def part1(dirs):
     return sum(d.total_size for d in dirs if d.total_size <= N)
 
 
+def part2(dirs):
+    unused_space = TOTAL_DISK_SPACE - dirs[-1].total_size
+    space_needed = DISK_SPACE_NEEDED - unused_space
+    index = bisect(dirs, space_needed, key=lambda x: x.total_size)
+    return dirs[index].total_size
+
+
 if __name__ == "__main__":
     dirs = parse(TEST.split("\n"))
     assert part1(dirs) == 95437
+    assert part2(dirs) == 24933642
 
     dirs = parse(get_input(7))
     print(part1(dirs))
+    print(part2(dirs))
