@@ -12,11 +12,17 @@ R 2"""
 MOVES = {"L": (-1, 0), "R": (1, 0), "U": (0, 1), "D": (0, -1)}
 
 
-def _follower_too_far(leader, follower):
-    return any(abs(leader[i] - follower[i]) > 1 for i in range(2))
+def sign(x):
+    return x // abs(x) if x != 0 else 0
 
 
-def _draw(positions, N=5):
+def _correction_vector(leader, follower):
+    x_delta, y_delta = (leader[i] - follower[i] for i in range(2))
+    if abs(x_delta) > 1 or abs(y_delta) > 1:
+        return sign(x_delta), sign(y_delta)
+
+
+def _draw(positions, N=6):
     s = ""
     for i in range(N - 1, -1, -1):
         for j in range(N):
@@ -35,9 +41,11 @@ def _move(positions, move):
     positions[0] = positions[0][0] + move[0], positions[0][1] + move[1]
     for i, follower in enumerate(positions[1:]):
         leader = positions[i]
-        if _follower_too_far(leader, follower):
-            # follower position moves to follow the leader in the opposite direction the leader moved
-            positions[i + 1] = leader[0] - move[0], leader[1] - move[1]
+        if correction_vector := _correction_vector(leader, follower):
+            positions[i + 1] = (
+                follower[0] + correction_vector[0],
+                follower[1] + correction_vector[1],
+            )
     return positions
 
 
@@ -59,3 +67,4 @@ if __name__ == "__main__":
     print(main(TEST.split("\n"), draw=True))
     print(main(get_input(9), draw=False))
     print(main(TEST.split("\n"), N=10, draw=True))
+    print(main(get_input(9), N=10, draw=False))
