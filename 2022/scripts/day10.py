@@ -167,6 +167,18 @@ def get_interesting_signal_strengths(values):
     return [values[i - 1] * i for i in range(20, len(values), 40)]
 
 
+def draw(cycle_values):
+    s = ""
+    for i, value in enumerate(cycle_values):
+        if i % 40 == 0:
+            s += "\n"
+        if value - 1 <= i % 40 <= value + 1:
+            s += "#"
+        else:
+            s += "."
+    return s
+
+
 if __name__ == "__main__":
     assert get_cycle_values(TEST.split("\n")) == [1, 1, 1, 4, 4, -1]
 
@@ -180,7 +192,9 @@ if __name__ == "__main__":
         3960,
     ]
     assert sum(strengths) == 13140
+    print(draw(cycle_values))
 
     cycle_values = get_cycle_values(get_input(10))
     strengths = get_interesting_signal_strengths(cycle_values)
     print(sum(strengths))
+    print(draw(cycle_values))
