@@ -33,7 +33,8 @@ def _draw(positions, N=5):
 def _move(positions, move):
     # Head
     positions[0] = positions[0][0] + move[0], positions[0][1] + move[1]
-    for i, (leader, follower) in enumerate(zip(positions[:-1], positions[1:])):
+    for i, follower in enumerate(positions[1:]):
+        leader = positions[i]
         if _follower_too_far(leader, follower):
             # follower position moves to follow the leader in the opposite direction the leader moved
             positions[i + 1] = leader[0] - move[0], leader[1] - move[1]
@@ -57,3 +58,4 @@ def main(rows, N=2, draw=False):
 if __name__ == "__main__":
     print(main(TEST.split("\n"), draw=True))
     print(main(get_input(9), draw=False))
+    print(main(TEST.split("\n"), N=10, draw=True))
