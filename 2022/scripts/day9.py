@@ -33,6 +33,7 @@ def _draw(head_position, tail_position, N=5):
 def _move(head_position, tail_position, move):
     head_position = head_position[0] + move[0], head_position[1] + move[1]
     if _tail_too_far(head_position, tail_position):
+        # tail position moves to follow the head in the opposite direction the head moved
         tail_position = head_position[0] - move[0], head_position[1] - move[1]
     return head_position, tail_position
 
