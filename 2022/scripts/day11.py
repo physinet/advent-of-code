@@ -1,3 +1,4 @@
+import math
 import re
 from typing import Callable
 
@@ -45,7 +46,7 @@ class Monkey:
 
 
 def _parse_operation(operation):
-    return lambda old: eval(operation)
+    return lambda old: eval(operation)  # 😬
 
 
 def parse_input(rows):
@@ -74,7 +75,7 @@ def _apply_relief(worry_level):
     return worry_level // 3
 
 
-def _round(monkeys, _print=False):
+def _round(monkeys, apply_relief=_apply_relief, _print=False):
     for monkey_id, monkey in sorted(monkeys.items()):
         if _print:
             print(f"Monkey {monkey_id}")
@@ -84,7 +85,7 @@ def _round(monkeys, _print=False):
             worry_level = monkey.operation(worry_level)
             if _print:
                 print(f"Worry level changes to {worry_level}")
-            worry_level = _apply_relief(worry_level)
+            worry_level = apply_relief(worry_level)
             if _print:
                 print(
                     f"Monkey gets bored with item. Worry level is divided by 3 to {worry_level}"
@@ -109,18 +110,28 @@ def _round(monkeys, _print=False):
     return monkeys
 
 
-def main(monkeys, _print=False):
-    for i in range(20):
-        monkeys = _round(monkeys, _print=_print if i == 0 else False)
+def main(monkeys, N, apply_relief=_apply_relief, _print=False):
+    for i in range(N):
+        monkeys = _round(
+            monkeys, apply_relief=apply_relief, _print=_print if i == 0 else False
+        )
         if _print:
             print(
                 f"After round {i+1}, the monkeys are holding items with these worry levels:"
             )
             for monkey_id, monkey in monkeys.items():
                 print(f"Monkey {monkey_id}: {','.join(map(str, monkey.items))}")
-    if _print:
-        for monkey_id, monkey in monkeys.items():
-            print(f"Monkey {monkey_id} inspected items {monkey.num_inspections} times.")
+        if _print:
+            for monkey_id, monkey in monkeys.items():
+                print(
+                    f"Monkey {monkey_id} inspected items {monkey.num_inspections} times."
+                )
+        if i in (0, 19, 999, 1999, 2999, 3999, 4999, 5999, 6999, 7999, 8999, 9999):
+            for monkey_id, monkey in monkeys.items():
+                print(
+                    f"Monkey {monkey_id} inspected items {monkey.num_inspections} times."
+                )
+
     activity_levels = list(
         sorted(monkey.num_inspections for monkey in monkeys.values())
     )
@@ -128,8 +139,20 @@ def main(monkeys, _print=False):
 
 
 if __name__ == "__main__":
+    # Part 1
     monkeys = parse_input(TEST.split("\n"))
-    assert main(monkeys, _print=True) == 10605
+    assert main(monkeys, 20) == 10605
 
     monkeys = parse_input(get_input(11))
-    print(main(monkeys))
+    print(main(monkeys, 20))
+
+    # Part 2
+
+    monkeys = parse_input(TEST.split("\n"))
+    apply_relief = lambda x: x % math.prod(
+        monkey.divisible_by for monkey in monkeys.values()
+    )
+    assert main(monkeys, 10000, apply_relief=apply_relief) == 2713310158
+
+    monkeys = parse_input(get_input(11))
+    print(main(monkeys, 10000, apply_relief=apply_relief))
