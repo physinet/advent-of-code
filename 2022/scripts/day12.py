@@ -33,6 +33,8 @@ def build_graph(rows):
     height = len(rows)
     width = len(rows[0].strip())
 
+    starts = []
+    ends = []
     graph = defaultdict(set)
     for i in range(width):
         for j in range(height):
@@ -40,12 +42,15 @@ def build_graph(rows):
             for x, y in neighbors(i, j, width, height):
                 if elevation(rows[y][x]) - current_elevation <= 1:
                     graph[(i, j)].add((x, y))
-            if rows[j][i] == "S":
-                start = (i, j)
-            elif rows[j][i] == "E":
-                end = (i, j)
+            match rows[j][i]:
+                case "S":
+                    start = (i, j)
+                case "a":
+                    starts.append((i, j))
+                case "E":
+                    end = (i, j)
 
-    return graph, start, end
+    return graph, start, end, starts
 
 
 def main(graph, start, end):
@@ -60,6 +65,7 @@ def main(graph, start, end):
                 queue.append((depth + 1, child))
             if child == end:
                 return depth + 1
+    return 1e100
 
 
 if __name__ == "__main__":
@@ -70,8 +76,10 @@ if __name__ == "__main__":
     assert neighbors(0, 0, 10, 10) == {(0, 1), (1, 0)}
     assert neighbors(9, 5, 10, 10) == {(8, 5), (9, 6), (9, 4)}
     assert neighbors(5, 5, 10, 10) == {(4, 5), (6, 5), (5, 4), (5, 6)}
-    graph, start, end = build_graph(TEST.split("\n"))
+    graph, start, end, starts = build_graph(TEST.split("\n"))
     print(main(graph, start, end))
+    print(min(main(graph, s, end) for s in starts))
 
-    graph, start, end = build_graph(get_input(12))
+    graph, start, end, starts = build_graph(get_input(12))
     print(main(graph, start, end))
+    print(min(main(graph, s, end) for s in starts))
