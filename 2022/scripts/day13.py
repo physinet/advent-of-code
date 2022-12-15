@@ -1,5 +1,6 @@
 from helpers import get_input
-from itertools import zip_longest
+from itertools import zip_longest, chain
+from functools import cmp_to_key
 
 TEST = """[1,1,3,1,1]
 [1,1,5,1,1]
@@ -60,13 +61,34 @@ def ordered(left: int | list | None, right: int | list | None) -> bool:
             return _ordered
 
 
-def main(rows):
+def main(rows: list[str]) -> int:
     pairs = packet_pairs(rows)
     indices = (i + 1 for i, pair in enumerate(pairs) if ordered(*pair))
-    return sum(indices)
+    return pairs, sum(indices)
+
+
+DIVIDER_PACKETS = ([[2]], [[6]])
+
+
+def main2(pairs: list[Pair]) -> int:
+    packets = list(
+        sorted(
+            chain((packet for pair in pairs for packet in pair), DIVIDER_PACKETS),
+            key=cmp_to_key(lambda left, right: -ordered(left, right)),
+        )
+    )
+
+    return (packets.index(DIVIDER_PACKETS[0]) + 1) * (
+        packets.index(DIVIDER_PACKETS[1]) + 1
+    )
 
 
 if __name__ == "__main__":
     assert ordered([[[10]], 1], [[10], 2])  # debug case
-    assert main(TEST.split("\n")) == 13
-    print(main(get_input(13)))
+    pairs, sum_of_indices = main(TEST.split("\n"))
+    assert sum_of_indices == 13
+    assert main2(pairs) == 140
+
+    pairs, sum_of_indices = main(get_input(13))
+    print(sum_of_indices)
+    print(main2(pairs))
