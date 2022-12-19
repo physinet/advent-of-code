@@ -38,18 +38,17 @@ def parse(rows: list[str]) -> list[list[Coordinate]]:
         walls.append(wall)
     return walls
 
-def sign(a):
-    return 0 if a == 0 else a // abs(a)
-
 def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
-    return {
-        (i, j)
-        for wall in walls
-        for (x1, y1), (x2, y2) in zip(wall[:-1], wall[1:])
-        if x1 != x2 and y1 != y2
-        for i in range(x1, x2, sign(x2 - x1))
-        for j in range(y1, y2, sign(y2 - y1))
-    }
+    coords = {}
+    for wall in walls:
+        for (x1, y1), (x2, y2) in zip(wall[:-1], wall[1:]):
+            if x1 == x2:
+                for y in range(min(y1, y2), max(y1, y2) + 1, 1):
+                    coords.add((x1, y))
+            if y1 == y2:
+                for x in range(min(x1, x2), max(x1, x2) + 1, 1):
+                    coords.add((x, y2))
+    return coords
 
 def main(coords: set[Coordinate], source: Coordinate) -> None:
     ...
