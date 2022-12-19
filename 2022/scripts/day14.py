@@ -81,4 +81,4 @@ if __name__ == "__main__":
     walls = parse(TEST.split("\n"))
     coords = build_walls(walls)
     assert coords == TEST_COORDS
-    print(main(coords, source))
+    print(main(coords, SOURCE))
