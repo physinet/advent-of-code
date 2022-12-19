@@ -56,5 +56,7 @@ def main(coords: set[Coordinate], source: Coordinate) -> None:
 
 if __name__ == "__main__":
     walls = parse(TEST.split("\n"))
+    print(walls)
     coords = build_walls(walls)
+    print(coords)
     assert coords == TEST_COORDS
