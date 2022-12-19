@@ -50,12 +50,35 @@ def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
                     coords.add((x, y2))
     return coords
 
-def main(coords: set[Coordinate], source: Coordinate) -> None:
-    ...
+def abyss(sand: Coordinate, coords: set[Coordinate]) -> bool:
+    return any(sand[1] > coord[1] for coord in coords)
+
+def main(coords: set[Coordinate], source: Coordinate) -> int:
+    sand = set()
+    count = 0
+    grain = source
+    while not abyss(grain, coords):
+        possible_positions = (
+            (grain[0], grain[1] + 1), 
+            (grain[0] - 1, grain[1] + 1), 
+            (grain[0] + 1, grain[1] + 1)
+        )
+        for position in possible_positions:
+            if position not in sand:
+                sand.add(position)
+                grain = position
+                break
+        else:
+            sand.add(grain)
+            count += 1
+            grain = source
+    return count
+
+
+SOURCE = (500, 0)
 
 if __name__ == "__main__":
     walls = parse(TEST.split("\n"))
-    print(walls)
     coords = build_walls(walls)
-    print(coords)
     assert coords == TEST_COORDS
+    print(main(coords, source))
