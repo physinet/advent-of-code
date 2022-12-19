@@ -73,6 +73,28 @@ def main(coords: set[Coordinate], source: Coordinate) -> int:
             grain = source
     return count
 
+def main2(coords: set[Coordinate], source: Coordinate) -> int:
+    blocked = set(coords)
+    floor = max(coord[1] for coord in coords) + 2
+    count = 0
+    grain = source
+    while source not in blocked:
+        possible_positions = (
+            (grain[0], grain[1] + 1), 
+            (grain[0] - 1, grain[1] + 1), 
+            (grain[0] + 1, grain[1] + 1)
+        )
+        for position in possible_positions:
+            if position not in blocked:
+                if position[1] == floor:
+                    continue
+                grain = position
+                break
+        else:
+            blocked.add(grain)
+            count += 1
+            grain = source
+    return count
 
 SOURCE = (500, 0)
 
@@ -81,9 +103,11 @@ if __name__ == "__main__":
     coords = build_walls(walls)
     assert coords == TEST_COORDS
     assert main(coords, SOURCE) == 24
+    assert main2(coords, SOURCE) == 93
 
     walls = parse(get_input(14))
     coords = build_walls(walls)
     print(main(coords, SOURCE))
+    print(main2(coords, SOURCE))
 
     
