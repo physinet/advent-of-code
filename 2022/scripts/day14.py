@@ -79,6 +79,7 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
     count = 0
     grain = source
     while source not in blocked:
+        print(source, grain, blocked)
         possible_positions = (
             (grain[0], grain[1] + 1), 
             (grain[0] - 1, grain[1] + 1), 
