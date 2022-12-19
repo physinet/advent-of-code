@@ -29,20 +29,14 @@ TEST_COORDS = {
 Coordinate = tuple[int, int]
 
 def parse(rows: list[str]) -> list[list[Coordinate]]:
+    walls = []
     for row in rows:
-        print(row)
+        wall = []
         for coord in row.split(" -> "):
-            print(coord)
-            for x, y in coord.split(","):
-                print(x,y)
-    return [
-        [
-            (int(x), int(y))
-            for coord in row.split(" -> ") 
-            for x, y in coord.split(",")
-        ]
-        for row in rows
-    ]
+            x, y = coord.split(",")
+            wall.append((int(x), int(y)))
+        walls.append(wall)
+    return walls
 
 def sign(a):
     return a // abs(a)
