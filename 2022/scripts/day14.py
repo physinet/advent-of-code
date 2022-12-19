@@ -39,7 +39,7 @@ def parse(rows: list[str]) -> list[list[Coordinate]]:
     return walls
 
 def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
-    coords = {}
+    coords = set()
     for wall in walls:
         for (x1, y1), (x2, y2) in zip(wall[:-1], wall[1:]):
             if x1 == x2:
