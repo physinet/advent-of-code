@@ -51,7 +51,7 @@ def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
     return coords
 
 def abyss(sand: Coordinate, coords: set[Coordinate]) -> bool:
-    return any(sand[1] > coord[1] for coord in coords)
+    return all(sand[1] > coord[1] for coord in coords)
 
 def main(coords: set[Coordinate], source: Coordinate) -> int:
     blocked = set(coords)
