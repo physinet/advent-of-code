@@ -58,20 +58,16 @@ def main(coords: set[Coordinate], source: Coordinate) -> int:
     count = 0
     grain = source
     while not abyss(grain, coords):
-        print(grain)
         possible_positions = (
             (grain[0], grain[1] + 1), 
             (grain[0] - 1, grain[1] + 1), 
             (grain[0] + 1, grain[1] + 1)
         )
-        print(possible_positions)
         for position in possible_positions:
-            print(position, blocked)
             if position not in blocked:
                 grain = position
                 break
         else:
-            print("blocked", grain, count)
             blocked.add(grain)
             count += 1
             grain = source
@@ -84,4 +80,10 @@ if __name__ == "__main__":
     walls = parse(TEST.split("\n"))
     coords = build_walls(walls)
     assert coords == TEST_COORDS
+    assert main(coords, SOURCE) == 24
+
+    walls = parse(get_input(14))
+    coords = build_walls(walls)
     print(main(coords, SOURCE))
+
+    
