@@ -86,9 +86,9 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
             (grain[0] + 1, grain[1] + 1)
         )
         for position in possible_positions:
-            if position[1] == floor - 1:
-                break
             if position not in blocked:
+                if position[1] == floor:
+                    continue
                 grain = position
                 break
         else:
