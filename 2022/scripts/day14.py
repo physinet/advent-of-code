@@ -48,6 +48,7 @@ def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
         for (x1, y1), (x2, y2) in zip(wall[:-1], wall[1:])
         for i in range(x1, x2, sign(x2 - x1))
         for j in range(y1, y2, sign(y2 - y1))
+        if x1 != x2 and y1 != y2
     }
 
 def main(coords: set[Coordinate], source: Coordinate) -> None:
