@@ -32,8 +32,8 @@ def parse(rows: list[str]) -> list[list[Coordinate]]:
     return [
         [
             (int(x), int(y))
-            for x, y in coord.split(",")
             for coord in row.split(" -> ") 
+            for x, y in coord.split(",")
         ]
         for row in rows
     ]
