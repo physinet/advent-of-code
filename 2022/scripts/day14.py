@@ -65,7 +65,6 @@ def main(coords: set[Coordinate], source: Coordinate) -> int:
         )
         for position in possible_positions:
             if position not in blocked:
-                blocked.add(position)
                 grain = position
                 break
         else:
