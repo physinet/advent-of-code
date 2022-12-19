@@ -39,7 +39,7 @@ def parse(rows: list[str]) -> list[list[Coordinate]]:
     return walls
 
 def sign(a):
-    return a // abs(a)
+    return 0 if a == 0 else a // abs(a)
 
 def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
     return {
