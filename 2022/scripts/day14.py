@@ -29,6 +29,12 @@ TEST_COORDS = {
 Coordinate = tuple[int, int]
 
 def parse(rows: list[str]) -> list[list[Coordinate]]:
+    for row in rows:
+        print(row)
+        for coord in row.split(" -> "):
+            print(coord)
+            for x, y in coord.split(","):
+                print(x,y)
     return [
         [
             (int(x), int(y))
