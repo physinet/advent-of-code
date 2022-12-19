@@ -78,7 +78,7 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
     floor = max(coord[1] for coord in coords) + 2
     count = 0
     grain = source
-    while True:
+    while source not in blocked:
         possible_positions = (
             (grain[0], grain[1] + 1), 
             (grain[0] - 1, grain[1] + 1), 
@@ -91,11 +91,10 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
                 grain = position
                 break
         else:
-            if grain == source:
-                return count + 1
             blocked.add(grain)
             count += 1
             grain = source
+    return count
 
 SOURCE = (500, 0)
 
