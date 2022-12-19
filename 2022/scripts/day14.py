@@ -54,7 +54,7 @@ def abyss(sand: Coordinate, coords: set[Coordinate]) -> bool:
     return any(sand[1] > coord[1] for coord in coords)
 
 def main(coords: set[Coordinate], source: Coordinate) -> int:
-    blocked = set(*coords)
+    blocked = set(coords)
     count = 0
     grain = source
     while not abyss(grain, coords):
