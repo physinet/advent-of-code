@@ -27,7 +27,7 @@ class Sensor:
 def parse(rows):
     sensors = []
     for row in rows:
-        pattern = "Sensor at x=(\d+), y=(\d+): closest beacon is at x=(\d+), y=(\d+)"
+        pattern = "Sensor at x=([-\d]+), y=([-\d]+): closest beacon is at x=([-\d]+), y=([-\d]+)"
         match = re.match(pattern, row)
         sensor_coords = int(match.group(1)), int(match.group(2))
         beacon_coords = int(match.group(3)), int(match.group(4))
