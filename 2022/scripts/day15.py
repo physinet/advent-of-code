@@ -26,7 +26,7 @@ class Sensor:
     closest_beacon: Coordinate
 
 
-def parse(rows):
+def parse(rows: list[str]) -> list[Sensor]:
     sensors = []
     for row in rows:
         pattern = "Sensor at x=([-\d]+), y=([-\d]+): closest beacon is at x=([-\d]+), y=([-\d]+)"
@@ -37,6 +37,26 @@ def parse(rows):
     return sensors
 
 
-if __name__ == "__smain__":
+def num_coords_without_beacons(sensors: list[Sensor], row_num: int) -> set[Coordinate]:
+    coords = set()
+    beacons = set()
+    for sensor in sensors:
+        beacons.add(sensor.closest_beacon)
+        distance_to_beacon = abs(sensor.coords[0] - sensor.closest_beacon[0]) + abs(
+            sensor.coords[1] - sensor.closest_beacon[1]
+        )
+        distance_to_row = abs(sensor.coords[1] - row_num)
+        remaining_distance = distance_to_beacon - distance_to_row
+        for y in range(remaining_distance + 1):
+            coords.add((sensor.coords[0] + y, row_num))
+            coords.add((sensor.coords[0] - y, row_num))
+
+    return len(coords - beacons)
+
+
+if __name__ == "__main__":
     sensors = parse(TEST.split("\n"))
-    print(sensors)
+    assert num_coords_without_beacons(sensors, 10) == 26
+
+    sensors = parse(get_input(15))
+    print(num_coords_without_beacons(sensors, 2_000_000))
