@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 from helpers import get_input
 
@@ -37,26 +38,36 @@ def parse(rows: list[str]) -> list[Sensor]:
     return sensors
 
 
-def num_coords_without_beacons(sensors: list[Sensor], row_num: int) -> set[Coordinate]:
-    coords = set()
-    beacons = set()
+def non_beacon_locations(
+    sensors: list[Sensor], N: int
+) -> dict[int, list[tuple[int, int]]]:
+    """Returns non-beacon locations as a dict of lists.
+    The keys of the dict correspond to the x coordinate.
+    The values contain a set of values for y coordinates for each row where there cannot be a beacon.
+    """
+    locations = defaultdict(set)
+    beacons = defaultdict(set)
     for sensor in sensors:
-        beacons.add(sensor.closest_beacon)
+        beacons[sensor.closest_beacon[0]].add(sensor.closest_beacon[1])
         distance_to_beacon = abs(sensor.coords[0] - sensor.closest_beacon[0]) + abs(
             sensor.coords[1] - sensor.closest_beacon[1]
         )
-        distance_to_row = abs(sensor.coords[1] - row_num)
-        remaining_distance = distance_to_beacon - distance_to_row
-        for y in range(remaining_distance + 1):
-            coords.add((sensor.coords[0] + y, row_num))
-            coords.add((sensor.coords[0] - y, row_num))
-
-    return len(coords - beacons)
+        for i in range(-distance_to_beacon, distance_to_beacon + 1):
+            x = sensor.coords[0] + i
+            remaining_distance = distance_to_beacon - abs(i)
+            for j in range(-remaining_distance, remaining_distance + 1):
+                y = sensor.coords[1] + j
+                locations[x].add(y)
+    for x in locations:
+        locations[x] -= beacons[x]
+    return locations
 
 
 if __name__ == "__main__":
     sensors = parse(TEST.split("\n"))
-    assert num_coords_without_beacons(sensors, 10) == 26
+    locations = non_beacon_locations(sensors, 20)
+    assert len(locations[10]) == 26
 
     sensors = parse(get_input(15))
-    print(num_coords_without_beacons(sensors, 2_000_000))
+    locations = non_beacon_locations(sensors, 4_000_000)
+    print(len(locations[2_000_000]))
