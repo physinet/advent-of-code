@@ -19,10 +19,12 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"""
 
 Coordinate = tuple[int, int]
 
+
 @dataclass
 class Sensor:
     coords: Coordinate
     closest_beacon: Coordinate
+
 
 def parse(rows):
     sensors = []
@@ -34,7 +36,7 @@ def parse(rows):
         sensors.append(Sensor(sensor_coords, beacon_coords))
     return sensors
 
-if __name__ == "__main__":
+
+if __name__ == "__smain__":
     sensors = parse(TEST.split("\n"))
     print(sensors)
-    

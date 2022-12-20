@@ -3,13 +3,13 @@ from helpers import get_input
 TEST = """498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9"""
 TEST_COORDS = {
-    (498, 4), 
-    (498, 5), 
-    (498, 6), 
-    (497, 6), 
-    (496, 6), 
-    (503, 4), 
-    (502, 4), 
+    (498, 4),
+    (498, 5),
+    (498, 6),
+    (497, 6),
+    (496, 6),
+    (503, 4),
+    (502, 4),
     (502, 5),
     (502, 6),
     (502, 7),
@@ -28,6 +28,7 @@ TEST_COORDS = {
 
 Coordinate = tuple[int, int]
 
+
 def parse(rows: list[str]) -> list[list[Coordinate]]:
     walls = []
     for row in rows:
@@ -37,6 +38,7 @@ def parse(rows: list[str]) -> list[list[Coordinate]]:
             wall.append((int(x), int(y)))
         walls.append(wall)
     return walls
+
 
 def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
     coords = set()
@@ -50,8 +52,10 @@ def build_walls(walls: list[list[Coordinate]]) -> set[Coordinate]:
                     coords.add((x, y2))
     return coords
 
+
 def abyss(sand: Coordinate, coords: set[Coordinate]) -> bool:
     return all(sand[1] > coord[1] for coord in coords)
+
 
 def main(coords: set[Coordinate], source: Coordinate) -> int:
     blocked = set(coords)
@@ -59,9 +63,9 @@ def main(coords: set[Coordinate], source: Coordinate) -> int:
     grain = source
     while not abyss(grain, coords):
         possible_positions = (
-            (grain[0], grain[1] + 1), 
-            (grain[0] - 1, grain[1] + 1), 
-            (grain[0] + 1, grain[1] + 1)
+            (grain[0], grain[1] + 1),
+            (grain[0] - 1, grain[1] + 1),
+            (grain[0] + 1, grain[1] + 1),
         )
         for position in possible_positions:
             if position not in blocked:
@@ -73,6 +77,7 @@ def main(coords: set[Coordinate], source: Coordinate) -> int:
             grain = source
     return count
 
+
 def main2(coords: set[Coordinate], source: Coordinate) -> int:
     blocked = set(coords)
     floor = max(coord[1] for coord in coords) + 2
@@ -80,9 +85,9 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
     grain = source
     while source not in blocked:
         possible_positions = (
-            (grain[0], grain[1] + 1), 
-            (grain[0] - 1, grain[1] + 1), 
-            (grain[0] + 1, grain[1] + 1)
+            (grain[0], grain[1] + 1),
+            (grain[0] - 1, grain[1] + 1),
+            (grain[0] + 1, grain[1] + 1),
         )
         for position in possible_positions:
             if position not in blocked:
@@ -95,6 +100,7 @@ def main2(coords: set[Coordinate], source: Coordinate) -> int:
             count += 1
             grain = source
     return count
+
 
 SOURCE = (500, 0)
 
@@ -109,5 +115,3 @@ if __name__ == "__main__":
     coords = build_walls(walls)
     print(main(coords, SOURCE))
     print(main2(coords, SOURCE))
-
-    
