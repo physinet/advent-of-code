@@ -66,8 +66,7 @@ def get(jobs: dict, name: str):
         )
 
 
-def inverse(jobs, val, name):
-    operation = jobs[name]
+def safe_unsafe(jobs, operation):
     unsafe_branch = None
     for name in (operation.name1, operation.name2):
         try:
@@ -75,6 +74,13 @@ def inverse(jobs, val, name):
                 safe_branch = name
         except TypeError:
             unsafe_branch = name
+    return safe_branch, unsafe_branch
+
+
+def inverse(jobs, val, name):
+    operation = jobs[name]
+
+    safe_branch, unsafe_branch = safe_unsafe(jobs, operation)
 
     if (operation.name1 == safe_branch) and (operation.op in "-/"):
         val = OPERATORS[operation.op](get(jobs, safe_branch), val)
@@ -88,20 +94,12 @@ def inverse(jobs, val, name):
 
 
 def main2(jobs: dict) -> int:
-    # Replace the human with None
     jobs["humn"] = None
     root_op = jobs["root"]
 
-    # Find the branch that contains the human
-    for name in (root_op.name1, root_op.name2):
-        try:
-            get(jobs, name)
-            safe_branch = name
-        except TypeError:
-            unsafe_branch = name
+    safe_branch, unsafe_branch = safe_unsafe(jobs, root_op)
 
-    val = get(jobs, safe_branch)
-    return inverse(jobs, val, unsafe_branch)
+    return inverse(jobs, get(jobs, safe_branch), unsafe_branch)
 
 
 if __name__ == "__main__":
