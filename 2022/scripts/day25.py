@@ -34,15 +34,54 @@ TEST = (
     ("122", 37),
 )
 
-SNAFU_CHARS = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
+CHAR_TO_NUM = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
+NUM_TO_CHAR = {-2: "=", -1: "-", 0: "0", 1: "1", 2: "2"}
 
 
 def from_snafu(s: str) -> int:
-    return sum(SNAFU_CHARS[c] * 5**i for i, c in enumerate(reversed(s)))
+    return sum(CHAR_TO_NUM[c] * 5**i for i, c in enumerate(reversed(s)))
+
+
+def to_snafu(num: int) -> str:
+    s = ""
+    while True:
+        num += 2
+        floor = num // 5
+        s += to_snafu(floor)
+        num = num % 5 - 2
+        if num <= 2:
+            break
+    s += NUM_TO_CHAR[num]
+    return s.lstrip("0")
+
+
+def to_snafu(num: int) -> str:
+    s = ""
+    while True:
+        if num in (-2, -1, 0, 1, 2):
+            s += NUM_TO_CHAR[num]
+            break
+        else:
+            floor = (num + 2) // 5
+            s += to_snafu(floor)
+            num = (num + 2) % 5 - 2
+    return s
 
 
 if __name__ == "__main__":
     for num, snafu in EXAMPLES:
+        assert to_snafu(num) == snafu
         assert from_snafu(snafu) == num
-    for snafu, num in TEST:
-        assert from_snafu(snafu) == num
+    tot = 0
+    for snafu, check_num in TEST:
+        assert to_snafu(check_num) == snafu
+        assert (num := from_snafu(snafu)) == check_num
+        tot += num
+    assert tot == 4890
+    assert to_snafu(tot) == "2=-1=0"
+
+    tot = 0
+    for snafu in get_input(25):
+        tot += from_snafu(snafu.strip())
+
+    print(to_snafu(tot))
